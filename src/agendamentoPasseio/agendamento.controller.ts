@@ -8,10 +8,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AgendamentoPasseioService } from '../../src/agendamentoPasseio/agendamento.service';
-import { AgendamentoPasseioDto } from '../../src/agendamentoPasseio/agendamentoDto/agendamento.dto';
-import { Agendamento } from '../../src/agendamentoPasseio/agendamentoSchema/agendamento.schema';
-import { AtualizaAgendamentoPasseioDto } from '../../src/agendamentoPasseio/agendamentoDto/atualizaPasseioAgendado.dto';
+import { AgendamentoPasseioService } from './agendamento.service';
+import { Agendamento } from './agendamentoSchema/agendamento.schema';
+import { AgendamentoPasseioDto } from './agendamentoDto/agendamento.dto';
+import { AtualizaAgendamentoPasseioDto } from './agendamentoDto/AtualizaPasseioAgendado.dto';
 
 @ApiTags('Agendamento de passeio')
 @Controller('/agendamento')

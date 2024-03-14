@@ -1,17 +1,14 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { Endereco } from '../../src/usuario/usuarioSchema/endereco.schema';
-import { EnderecoDto } from '../../src/usuario/usuarioDto/EnderecoCliente.dto';
-import { Usuario } from '../../src/usuario/usuarioSchema/usuario.schema';
+import { Endereco } from './usuarioSchema/Endereco.schema';
+import { EnderecoDto } from './usuarioDto/EnderecoCliente.dto';
 
 @Injectable()
 export class EnderecoService {
   constructor(
     @InjectModel(Endereco.name)
     private endereco: mongoose.Model<Endereco>,
-    @InjectModel(Usuario.name)
-    private usuario: mongoose.Model<Usuario>,
   ) {}
 
   async pegaTodosOsEnderecos(): Promise<Endereco[]> {
@@ -29,29 +26,19 @@ export class EnderecoService {
     return enderecoSalvo;
   }
 
+  // TODO colocar retorno especifico
   async atualizaEndereco(id: string, dadosAtualizados: EnderecoDto) {
+    //: Promise<Endereco> {
+
     const atualizaEndereco: Endereco = await this.endereco.findByIdAndUpdate(
       id,
       dadosAtualizados,
     );
 
-    const encontraEnderecoAtualizado: Endereco =
-      await this.endereco.findById(id);
-
-    const recebeEndereco: Usuario[] = await this.usuario.find({
-      'endereco._id': id,
-    });
-
-    const atualizaEnderecoUsuario: Usuario =
-      await this.usuario.findByIdAndUpdate(recebeEndereco[0]._id, {
-        endereco: encontraEnderecoAtualizado,
-      });
-
     return atualizaEndereco;
   }
-
-  async apagaEndereco(endereco: Endereco) {
-    const enderecoId = await this.endereco.deleteOne(endereco._id);
-    return enderecoId;
+  // TODO usar o método deleteOne VOID sem retorno
+  async apagaEndereco(endereco: Endereco): Promise<void> {
+    await this.endereco.deleteOne(endereco._id);
   }
 }

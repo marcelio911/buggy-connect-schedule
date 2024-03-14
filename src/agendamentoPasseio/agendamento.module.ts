@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AgendamentoPasseioController } from '../../src/agendamentoPasseio/agendamento.controller';
-import { AgendamentoPasseioService } from '../../src/agendamentoPasseio/agendamento.service';
 import {
   Agendamento,
   agendamentoSchema,
-} from '../../src/agendamentoPasseio/agendamentoSchema/agendamento.schema';
+} from './agendamentoSchema/agendamento.schema';
+import { AgendamentoPasseioController } from './agendamento.controller';
+import { AgendamentoPasseioService } from './agendamento.service';
 
 @Module({
   imports: [

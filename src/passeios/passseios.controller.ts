@@ -8,9 +8,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { PasseiosService } from '../../src/passeios/./passeios.service';
-import { PasseiosDto } from '../../src/passeios/./passeiosDto/passeios.dto';
-import { AtualizaPasseioDto } from '../../src/passeios/./passeiosDto/atualizaPasseios.dto';
+import { PasseiosService } from './passeios.service';
+import { PasseiosDto } from './passeiosDto/passeios.dto';
+import { AtualizaPasseioDto } from './passeiosDto/AtualizaPasseios.dto';
 
 @ApiTags('Passeios')
 @Controller('passeios')
@@ -52,4 +52,3 @@ export class PasseiosController {
     return deletandoPasseio;
   }
 }
- 

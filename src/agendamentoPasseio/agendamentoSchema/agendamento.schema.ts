@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export class Agendamento {
   @Prop()
   PasseioAgendado: string;
-  
+
   @Prop()
   HorarioInícioPasseio: string;
 

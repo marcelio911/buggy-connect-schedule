@@ -3,8 +3,8 @@ import { Model } from 'mongoose';
 import {
   ContaPessoalDto,
   ContaProfissionalDto,
-} from '../../../src/usuario/usuarioDto/TipoDeConta.dto';
-import { Endereco } from '../../../src/usuario/usuarioSchema/endereco.schema';
+} from 'usuario/usuarioDto/TipoDeConta.dto';
+import { Endereco } from './Endereco.schema';
 
 @Schema({ timestamps: true })
 export class Usuario extends Model {

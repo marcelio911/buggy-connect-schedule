@@ -8,11 +8,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { UsuarioService } from '../../src/usuario/usuario.service';
-import { UsuarioDto } from '../../src/usuario/usuarioDto/Cliente.dto';
-import { UsuarioEntity } from '../../src/usuario/usuarioEntity/Cliente.entity';
-import { AtualizaClienteDto } from '../../src/usuario/usuarioDto/AtualizaDadosUsuario.tdo';
-import { Usuario } from '../../src/usuario/usuarioSchema/usuario.schema';
+import { UsuarioService } from './usuario.service';
+import { UsuarioDto } from './usuarioDto/Cliente.dto';
+import { UsuarioEntity } from './usuarioEntity/Cliente.entity';
+import { AtualizaClienteDto } from './usuarioDto/AtualizaDadosUsuario.tdo';
 
 @ApiTags('Usuários')
 @Controller('/usuarios')
@@ -48,28 +47,35 @@ export class usuarioController {
     return this.usuarioService.pegaUsuarios();
   }
 
-  @Get('/:id?/:email?/:cpf?')
-  @ApiOperation({
-    description:
-      'Insira o id cpf ou e-mail no input a baixo para pesquisar o usuário desejado',
-  })
-  @ApiParam({
-    name: 'id',
-    required: false,
-    description: 'Insira o id, cpf ou email',
-  })
-  async pegaUsuarioPorParametro(
-    @Param('id') id: string,
-  ): Promise<Usuario | object> {
-    try {
-      const pegaUsuario = await this.usuarioService.pegaUsuarioPorParametro(id);
-      return pegaUsuario;
-    } catch {
-      return;
-    }
-  }
+  // TODO quebrar a rota em 3 rotas diferentes
+  // @Get('/:id')
+  // @Get('/:email')
+  // @Get('/:cpf')
 
-  @Put('/:id?/:email?/:cpf?')
+  // @Get('/:id?/:email?/:cpf?')
+  // @ApiOperation({
+  //   description:
+  //     'Insira o id cpf ou e-mail no input a baixo para pesquisar o usuário desejado',
+  // })
+  // @ApiParam({
+  //   name: 'id',
+  //   required: false,
+  //   description: 'Insira o id, cpf ou email',
+  // })
+  // async pegaUsuarioPorParametro(
+  //   @Param('id') id: string,
+  // ): Promise<Usuario | object> {
+  //   try {
+  //     const pegaUsuario = await this.usuarioService.pegaUsuarioPorParametro(id);
+  //     return pegaUsuario;
+  //   } catch {
+  //     return;
+  //   }
+  // }
+
+  // TODO atualiza apenas pelo ID do usuario
+  // @Put('/:id')
+  @Put('/:id')
   @ApiOperation({
     description:
       'Insira o id cpf ou e-mail no input a baixo para atualizar o usuário desejado',
@@ -84,7 +90,7 @@ export class usuarioController {
     @Body() dadosUsuario: AtualizaClienteDto,
   ) {
     try {
-      const atualizaUsuario = await this.usuarioService.atualizaUsuario(
+      const atualizaUsuario = await this.usuarioService.atualizaUsuarioPorId(
         id,
         dadosUsuario,
       );
@@ -95,15 +101,18 @@ export class usuarioController {
     }
   }
 
-  @Delete('/:id?/:email?/:cpf?')
+  // TODO  quebrar a rota em 3 rotas diferentes
+  // @Delete('/porEmail/:email')
+  // @Delete('/porCpf/:cpf')
+  @Delete('/porId/:id')
   @ApiParam({
     name: 'id',
     required: false,
-    description: 'Insira o id, cpf ou email',
+    description: 'Insira o id', //
   })
   @ApiOperation({
     description:
-      'Insira o id cpf ou e-mail no input a baixo para deletar o usuário desejado',
+      'Insira o id nno input a baixo para deletar o usuário desejado',
   })
   async removeUsuario(@Param('id') id: string): Promise<object> {
     try {

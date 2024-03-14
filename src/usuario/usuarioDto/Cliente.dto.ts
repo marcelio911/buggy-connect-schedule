@@ -7,14 +7,12 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { EnderecoDto } from '../../../src/usuario/usuarioDto/EnderecoCliente.dto';
-import {
-  ContaPessoalDto,
-  ContaProfissionalDto,
-} from '../../../src/usuario/usuarioDto/TipoDeConta.dto';
-import { emailValidado } from '../../../src/usuario/validador/email.validator';
-import { cpfValidado } from '../../../src/usuario/validador/cpf.validator';
+
 import { senhaValidada } from '../validador/senha.validator';
+import { emailValidado } from 'usuario/validador/email.validator';
+import { cpfValidado } from 'usuario/validador/cpf.validator';
+import { EnderecoDto } from './EnderecoCliente.dto';
+import { ContaPessoalDto, ContaProfissionalDto } from './TipoDeConta.dto';
 
 export class UsuarioDto {
   @ApiProperty({ example: 'Marcos santos oliveira' })

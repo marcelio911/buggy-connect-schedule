@@ -8,13 +8,15 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
-import { AtualizaEnderecoDto } from '../../../src/usuario/usuarioDto/AtualizaEndereco.dto';
+import { AtualizaEnderecoDto } from './AtualizaEndereco.dto';
 import {
   AtualizaContaPessoal,
   AtualizaContaProfissional,
-} from '../../../src/usuario/usuarioDto/AtualizaTipoDeConta.dto';
+} from './AtualizaTipoDeConta.dto';
 
+/**
+ * @deprecated Por que ter um DTO para atualizar um cliente separado?
+ */
 export class AtualizaClienteDto {
   @IsNotEmpty({ message: 'O campo nome não pode ser vazio!' })
   @MaxLength(30, { message: 'O campo nome deve ter no máximo 30 caracteres' })

@@ -1,20 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { usuarioController } from '../../src/usuario/usuario.controller';
-import { UsuarioService } from '../../src/usuario/usuario.service';
-import {
-  Usuario,
-  UsuarioSchema,
-} from '../../src/usuario/usuarioSchema/usuario.schema';
-import { ValidaEmail } from '../../src/usuario/validador/email.validator';
-import { ValidaCpf } from '../../src/usuario/validador/cpf.validator';
-import {
-  Endereco,
-  EnderecoSchema,
-} from '../../src/usuario/usuarioSchema/endereco.schema';
-import { EnderecoService } from '../../src/usuario/endereco.service';
-import { enderecoController } from '../../src/usuario/endereco.controller';
 import { validaSenha } from './validador/senha.validator';
+import { Usuario, UsuarioSchema } from './usuarioSchema/usuario.schema';
+import { Endereco, EnderecoSchema } from './usuarioSchema/Endereco.schema';
+import { usuarioController } from './usuario.controller';
+import { enderecoController } from './endereco.controller';
+import { UsuarioService } from './usuario.service';
+import { EnderecoService } from './endereco.service';
+import { ValidaEmail } from './validador/email.validator';
+import { ValidaCpf } from './validador/cpf.validator';
 
 @Module({
   imports: [

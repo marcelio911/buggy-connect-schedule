@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { Agendamento } from '../../src/agendamentoPasseio/agendamentoSchema/agendamento.schema';
-import { AtualizaAgendamentoPasseioDto } from '../../src/agendamentoPasseio/agendamentoDto/atualizaPasseioAgendado.dto';
+import { Agendamento } from './agendamentoSchema/agendamento.schema';
+import { AtualizaAgendamentoPasseioDto } from './agendamentoDto/AtualizaPasseioAgendado.dto';
 
 @Injectable()
 export class AgendamentoPasseioService {
   constructor(
     @InjectModel(Agendamento.name)
     private agendamento: mongoose.Model<Agendamento>,
-  ) {}
+  ) { }
 
   async retornarTodosOsPasseiosAgendados() {
     return this.agendamento.find();
@@ -38,7 +38,7 @@ export class AgendamentoPasseioService {
     return agendamentoAtualizado;
   }
 
-  async passeioAgendadoDeletado(id: string){
-    return this.agendamento.findByIdAndDelete(id)
+  async passeioAgendadoDeletado(id: string): Promise<void> {
+    this.agendamento.findByIdAndDelete(id);
   }
 }

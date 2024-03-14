@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { Usuario } from '../../src/usuario/usuarioSchema/usuario.schema';
-import { UsuarioDto } from '../../src/usuario/usuarioDto/Cliente.dto';
-import { UsuarioEntity } from '../../src/usuario/usuarioEntity/Cliente.entity';
-import { Endereco } from '../../src/usuario/usuarioSchema/endereco.schema';
-import { EnderecoService } from '../../src/usuario/endereco.service';
+import { Usuario } from './usuarioSchema/usuario.schema';
+import { EnderecoService } from './endereco.service';
+import { UsuarioEntity } from './usuarioEntity/Cliente.entity';
+import { UsuarioDto } from './usuarioDto/Cliente.dto';
+import { Endereco } from './usuarioSchema/Endereco.schema';
 
 @Injectable()
 export class UsuarioService {
@@ -13,7 +13,7 @@ export class UsuarioService {
     @InjectModel(Usuario.name)
     private usuario: mongoose.Model<Usuario>,
     private enderecoService: EnderecoService,
-  ) {}
+  ) { }
 
   // cliente
 
@@ -32,12 +32,19 @@ export class UsuarioService {
     }
   }
 
+  /**
+   * @deprecated Este método não será mais utilizado
+   * @param dadoEnviado
+   * @returns
+   */
   async pegaUsuarioPorParametro(
     dadoEnviado: string,
   ): Promise<Usuario | object> {
     try {
-      const usuarioEncontrado: Usuario[] =
-        await this.encontraUsuario(dadoEnviado);
+      const usuarioEncontrado: Usuario[] = await this.encontraUsuario(
+        'id',
+        dadoEnviado,
+      );
 
       if (usuarioEncontrado.length == 0) {
         throw new Error();
@@ -53,35 +60,46 @@ export class UsuarioService {
     }
   }
 
-  private async encontraUsuario(dadoEnviado: string): Promise<Usuario[]> {
+  private async encontraUsuario(
+    tipoConsulta: 'email' | 'cpf' | 'id',
+    dadoEnviado: string,
+  ): Promise<Usuario[]> {
     try {
-      if (this.regexEmail(dadoEnviado)) {
-        return await this.usuario.findOne({ email: dadoEnviado });
-      } else if (this.regexCpf(dadoEnviado)) {
-        return await this.usuario.findOne({ cpf: dadoEnviado });
-      } else {
-        return await this.usuario.findOne({ _id: dadoEnviado });
+      switch (tipoConsulta) {
+        case 'email':
+          return await this.usuario.find({ email: dadoEnviado });
+        case 'cpf':
+          return await this.usuario.find({ cpf: dadoEnviado });
+        case 'id':
+          return await this.usuario.find({ _id: dadoEnviado });
+        default:
+          throw new Error('Tipo de consulta inválido');
       }
+      // if (this.regexEmail(dadoEnviado)) {
+      //   return await this.usuario.findOne({ email: dadoEnviado });
+      // } else if (this.regexCpf(dadoEnviado)) {
+      //   return await this.usuario.findOne({ cpf: dadoEnviado });
+      // } else {
+      //   return await this.usuario.findOne({ _id: dadoEnviado });
+      // }
     } catch {
       return;
     }
   }
 
-  async atualizaUsuario(
+  async atualizaUsuarioPorId(
     id: string,
     dadosAtualizados: UsuarioDto,
   ): Promise<Usuario | string> {
     try {
-      const buscaUsuario: Usuario[0] = await this.encontraUsuario(id);
+      const buscaUsuario: Usuario[0] = await this.encontraUsuario('id', id);
 
       if (buscaUsuario.length == 0) {
         throw new Error();
       }
 
-      const usuarioEncontrado: Usuario = await this.usuario.findByIdAndUpdate(
-        buscaUsuario._id,
-        dadosAtualizados,
-      );
+      await this.usuario.findByIdAndUpdate(buscaUsuario._id, dadosAtualizados);
+
       const usuarioAtualizado = await this.usuario.findOne(buscaUsuario._id);
 
       return usuarioAtualizado;
@@ -90,13 +108,37 @@ export class UsuarioService {
         'Usuario não encontrado, verifique se o dado que inseriu é um id, cpf ou email');
     }
   }
+  // TODO se realmente for necessário usar o método para atualizar endereço
+  async atualizaEnderecoUsuario(
+    idUsuario: string,
+    dados: Usuario,
+  ): Promise<Usuario> {
+    this.enderecoService.atualizaEndereco(dados.endereco._id, dados.endereco);
+
+    const recebeEndereco: Usuario = await this.usuario.findOne({
+      'endereco._id': dados.endereco._id,
+    });
+
+    const encontraEnderecoAtualizado: Endereco = dados.endereco;
+
+    const atualizaEnderecoUsuario: Usuario =
+      await this.usuario.findByIdAndUpdate(recebeEndereco._id, {
+        endereco: encontraEnderecoAtualizado,
+      });
+
+    return atualizaEnderecoUsuario;
+  }
 
   async deletaUsuario(id: string): Promise<object> {
     try {
-      const tipoDeBusca: Usuario[0] = await this.encontraUsuario(id);
-      const enderecoUsuaio: Endereco = tipoDeBusca.endereco;
-      const Endereco = await this.enderecoService.apagaEndereco(enderecoUsuaio);
-      const usuario = await this.usuario.findByIdAndDelete(tipoDeBusca._id);
+      const usuario: Usuario[0] = await this.encontraUsuario('id', id);
+      const enderecoUsuario: Endereco = usuario.endereco;
+
+      await this.enderecoService.apagaEndereco(enderecoUsuario); //TODO revisar se é realmente necessario ...
+
+      //TODO mudar para remover o usuario do banco de dados tipo VOID
+      await this.usuario.findByIdAndDelete(usuario._id);
+
       return {
         message: 'Usuário removido com sucesso!',
         usuarioRemovido: usuario,
