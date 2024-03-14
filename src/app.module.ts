@@ -1,10 +1,23 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config'
+import { PasseiosModule } from './passeios/passeios.module';
+import { usuarioModule } from './usuario/usuario.module';
+import { AgendamentoPasseioModule } from 'agendamentoPasseio/agendamento.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot(),
+    usuarioModule,
+    PasseiosModule,
+    AgendamentoPasseioModule,
+    MongooseModule.forRoot(
+      process.env.SERVIDOR_MONGO
+    )
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
+
